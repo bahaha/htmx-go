@@ -1,24 +1,25 @@
 package main
 
 import (
-	"html/template"
 	"htmx-go/internal/contacts/handler"
 	"htmx-go/internal/contacts/repository"
 	"htmx-go/internal/database"
 	"net/http"
 	"path/filepath"
 
+	"github.com/gin-contrib/multitemplate"
 	"github.com/gin-gonic/gin"
 )
 
 func main () {
   r := gin.Default()
-  r.SetHTMLTemplate(loadTemplates("web/templates"))
+  r.HTMLRender = loadTemplates("web/templates")
   handlers := initHandlers()
   r.GET("/", func(c *gin.Context) {
     c.Redirect(http.StatusFound, "/contacts")
   })
   r.GET("/contacts", handlers.ListContacts)
+  r.GET("/contacts/:id", handlers.FindContact)
 
   r.Run(":55688")
 }
@@ -33,11 +34,28 @@ func initHandlers() *handler.ContactHandler {
   return &handler.ContactHandler{Repo: repo}
 }
 
-func loadTemplates(templateDir string) *template.Template {
-  files, err := filepath.Glob(filepath.Join(templateDir, "*.tmpl"))
+func loadTemplates(templateDir string) multitemplate.Renderer {
+  renderer := multitemplate.NewRenderer()
+
+  layouts, err := filepath.Glob(templateDir + "/layout/*.html")
   if err != nil {
-    panic(err)
+    panic(err.Error())
   }
 
-  return template.Must(template.New("").ParseFiles(files...))
+  for _, layout := range layouts {
+    layoutFileName := filepath.Base(layout)
+    layoutName := layoutFileName[:len(layoutFileName)-len(filepath.Ext(layoutFileName))]
+
+    pages, err := filepath.Glob(templateDir + "/pages/" + layoutName + "/*.html")
+    if err != nil {
+      panic(err.Error())
+    }
+
+    for _, page := range pages {
+      pageName := filepath.Base(page)
+      renderer.AddFromFiles(pageName, layout, page)
+    }
+  }
+
+  return renderer
 }

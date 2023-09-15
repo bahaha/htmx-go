@@ -3,6 +3,7 @@ module htmx-go
 go 1.21.1
 
 require (
+	github.com/gin-contrib/multitemplate v0.0.0-20230212012517-45920c92c271
 	github.com/gin-gonic/gin v1.9.1
 	github.com/libsql/libsql-client-go v0.0.0-20230906132309-42289d60a030
 	modernc.org/sqlite v1.25.0
