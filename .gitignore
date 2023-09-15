@@ -52,3 +52,4 @@ $RECYCLE.BIN/
 # Temporary build folder
 tmp/
 
+run.fish

@@ -1,0 +1,20 @@
+{{ define "layout" }}
+<!DOCType html>
+<html lang="en">
+  <head>
+    <title>Contact App</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/htmx/1.9.5/htmx.min.js"></script>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>
+          <sub-title>A Demo Contacts Application</sub-title> 
+        </h1>
+      </header>
+      
+      {{ template "content" . }}
+    </main>
+  </body>
+</html>
+{{ end }}
