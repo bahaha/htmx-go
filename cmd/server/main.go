@@ -1,16 +1,26 @@
 package main
 
 import (
-  "github.com/gin-gonic/gin"
+	"html/template"
+	"htmx-go/internal/contacts/handler"
+	"path/filepath"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main () {
   r := gin.Default()
-  r.GET("/", func(c *gin.Context) {
-    c.JSON(200, gin.H{
-      "message": "Hello World",
-    })
-  })
+  r.SetHTMLTemplate(loadTemplates("web/templates"))
+  r.GET("/", handler.ListContacts)
 
   r.Run(":55688")
+}
+
+func loadTemplates(templateDir string) *template.Template {
+  files, err := filepath.Glob(filepath.Join(templateDir, "*.tmpl"))
+  if err != nil {
+    panic(err)
+  }
+
+  return template.Must(template.New("").ParseFiles(files...))
 }
