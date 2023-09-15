@@ -11,13 +11,15 @@ type ContactHandler struct {
 }
 
 func (h *ContactHandler) ListContacts(c *gin.Context) {
-  contacts, err := h.Repo.List()
+  keyword := c.DefaultQuery("q", "")
+  contacts, err := h.Repo.List(keyword)
   if err != nil {
     c.AbortWithError(500, err)
     return
   }
 
   c.HTML(200, "index.tmpl", gin.H{
+    "Keyword": keyword,
     "Contacts": contacts,
   })
 }

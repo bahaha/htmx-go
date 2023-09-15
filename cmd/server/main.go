@@ -5,6 +5,7 @@ import (
 	"htmx-go/internal/contacts/handler"
 	"htmx-go/internal/contacts/repository"
 	"htmx-go/internal/database"
+	"net/http"
 	"path/filepath"
 
 	"github.com/gin-gonic/gin"
@@ -14,7 +15,10 @@ func main () {
   r := gin.Default()
   r.SetHTMLTemplate(loadTemplates("web/templates"))
   handlers := initHandlers()
-  r.GET("/", handlers.ListContacts)
+  r.GET("/", func(c *gin.Context) {
+    c.Redirect(http.StatusFound, "/contacts")
+  })
+  r.GET("/contacts", handlers.ListContacts)
 
   r.Run(":55688")
 }

@@ -1,5 +1,10 @@
 {{ template "layout" . }}
 {{ define "content" }}
+<form action="/contacts" method="get">
+  <label for="search">Search Term</label>
+  <input id="search" name="q" type="search" value="{{ .Keyword }}">
+  <input type="submit" value="Search">
+</form>
 <table>
   <thead>
     <tr>

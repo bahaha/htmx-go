@@ -6,25 +6,37 @@ import (
 )
 
 type SqliteContactRepository struct {
-  DB *sql.DB
+	DB *sql.DB
 }
 
-func (r *SqliteContactRepository) List() ([]contacts.Contact, error) {
-  rows, err := r.DB.Query("SELECT id, first_name, last_name, phone, email FROM contacts")
-  if err != nil {
-    return nil, err
-  }
-  defer rows.Close()
+func (r *SqliteContactRepository) List(keyword string) ([]contacts.Contact, error) {
+	var rows *sql.Rows
+	var err error
 
-  var res []contacts.Contact
-  for rows.Next() {
-    var contact contacts.Contact
-    err := rows.Scan(&contact.ID, &contact.FirstName, &contact.LastName, &contact.Phone, &contact.Email)
-    if err != nil {
-      return nil, err
-    }
-    res = append(res, contact)
-  }
+	if keyword != "" {
+		keywordPattern := "%" + keyword + "%"
+		rows, err = r.DB.Query(
+			"SELECT id, first_name, last_name, phone, email FROM contacts WHERE first_name LIKE ? OR last_name LIKE ? OR phone LIKE ? OR email LIKE ?",
+			keywordPattern, keywordPattern, keywordPattern, keywordPattern,
+		)
+	} else {
+		rows, err = r.DB.Query("SELECT id, first_name, last_name, phone, email FROM contacts")
+	}
 
-  return res, nil
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var res []contacts.Contact
+	for rows.Next() {
+		var contact contacts.Contact
+		err := rows.Scan(&contact.ID, &contact.FirstName, &contact.LastName, &contact.Phone, &contact.Email)
+		if err != nil {
+			return nil, err
+		}
+		res = append(res, contact)
+	}
+
+	return res, nil
 }
