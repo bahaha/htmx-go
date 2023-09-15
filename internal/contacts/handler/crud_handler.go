@@ -1,11 +1,23 @@
 package handler
 
 import (
-  "github.com/gin-gonic/gin"
-  // "html/template"
-  // "htmx-go/internal/contacts"
+	"htmx-go/internal/contacts/repository"
+
+	"github.com/gin-gonic/gin"
 )
 
-func ListContacts(c *gin.Context) {
-  c.HTML(200, "index.tmpl", gin.H{})
+type ContactHandler struct {
+  Repo repository.ContactRepository
+}
+
+func (h *ContactHandler) ListContacts(c *gin.Context) {
+  contacts, err := h.Repo.List()
+  if err != nil {
+    c.AbortWithError(500, err)
+    return
+  }
+
+  c.HTML(200, "index.tmpl", gin.H{
+    "Contacts": contacts,
+  })
 }
