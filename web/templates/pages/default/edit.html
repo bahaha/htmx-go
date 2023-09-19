@@ -5,30 +5,55 @@
     <div>
       <p>
         <label for="email">Email</label>
-        <input name="email" type="email" id="email" placeholder="Email" value="{{ .Contact.Email }}" />
+        <input
+          name="email"
+          type="email"
+          id="email"
+          placeholder="Email"
+          value="{{ .Contact.Email }}"
+        />
         <span></span>
       </p>
       <p>
         <label for="first_name">First Name</label>
-        <input name="first_name" type="first_name" id="first_name" placeholder="First Name"
-          value="{{ .Contact.FirstName }}" />
+        <input
+          name="first_name"
+          type="first_name"
+          id="first_name"
+          placeholder="First Name"
+          value="{{ .Contact.FirstName }}"
+        />
         <span></span>
       </p>
       <p>
         <label for="last_name">Last Name</label>
-        <input name="last_name" type="last_name" id="last_name" placeholder="Last Name"
-          value="{{ .Contact.LastName }}" />
+        <input
+          name="last_name"
+          type="last_name"
+          id="last_name"
+          placeholder="Last Name"
+          value="{{ .Contact.LastName }}"
+        />
         <span></span>
       </p>
       <p>
         <label for="phone">Phone</label>
-        <input name="phone" type="phone" id="phone" placeholder="Phone"
-          value="{{ .Contact.Phone }}" />
+        <input
+          name="phone"
+          type="phone"
+          id="phone"
+          placeholder="Phone"
+          value="{{ .Contact.Phone }}"
+        />
         <span></span>
       </p>
     </div>
     <button>Save</button>
   </fieldset>
+</form>
+
+<form action="/contacts/{{ .Contact.ID }}/delete" method="post">
+  <button>Delete Contact</button>
 </form>
 
 <p>
