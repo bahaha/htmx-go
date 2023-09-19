@@ -80,3 +80,14 @@ func (h *ContactHandler) EditContact(c *gin.Context) {
 
 	c.Redirect(http.StatusFound, fmt.Sprintf("/contacts/%d", contact.ID))
 }
+
+func (h *ContactHandler) DeleteContact(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+
+	err := h.Repo.Delete(id)
+	if err != nil {
+		c.AbortWithError(500, err)
+	}
+
+	c.Redirect(http.StatusFound, "/contacts")
+}

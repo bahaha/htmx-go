@@ -23,6 +23,7 @@ func main() {
 	r.GET("/contacts/:id/edit", handlers.ContactViewToEdit)
 	r.POST("/contacts/:id/edit", handlers.EditContact)
 	r.GET("/contacts/:id", handlers.FindContact)
+	r.POST("/contacts/:id/delete", handlers.DeleteContact)
 
 	r.Run(":55688")
 }

@@ -88,3 +88,11 @@ func (r *SqliteContactRepository) Update(contact *contacts.Contact) error {
 
 	return nil
 }
+
+func (r *SqliteContactRepository) Delete(id int) error {
+	_, err := r.DB.Exec("DELETE FROM contacts WHERE id = ?", id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
