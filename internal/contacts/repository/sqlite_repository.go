@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+
 	"htmx-go/internal/contacts"
 )
 
@@ -17,7 +18,10 @@ func (r *SqliteContactRepository) List(keyword string) ([]contacts.Contact, erro
 		keywordPattern := "%" + keyword + "%"
 		rows, err = r.DB.Query(
 			"SELECT id, first_name, last_name, phone, email FROM contacts WHERE first_name LIKE ? OR last_name LIKE ? OR phone LIKE ? OR email LIKE ?",
-			keywordPattern, keywordPattern, keywordPattern, keywordPattern,
+			keywordPattern,
+			keywordPattern,
+			keywordPattern,
+			keywordPattern,
 		)
 	} else {
 		rows, err = r.DB.Query("SELECT id, first_name, last_name, phone, email FROM contacts")
@@ -31,7 +35,13 @@ func (r *SqliteContactRepository) List(keyword string) ([]contacts.Contact, erro
 	var res []contacts.Contact
 	for rows.Next() {
 		var contact contacts.Contact
-		err := rows.Scan(&contact.ID, &contact.FirstName, &contact.LastName, &contact.Phone, &contact.Email)
+		err := rows.Scan(
+			&contact.ID,
+			&contact.FirstName,
+			&contact.LastName,
+			&contact.Phone,
+			&contact.Email,
+		)
 		if err != nil {
 			return nil, err
 		}
@@ -42,14 +52,39 @@ func (r *SqliteContactRepository) List(keyword string) ([]contacts.Contact, erro
 }
 
 func (r *SqliteContactRepository) Find(id int) (*contacts.Contact, error) {
-  row := r.DB.QueryRow("SELECT id, first_name, last_name, phone, email FROM contacts WHERE id = ?", id)
+	row := r.DB.QueryRow(
+		"SELECT id, first_name, last_name, phone, email FROM contacts WHERE id = ?",
+		id,
+	)
 
-  var contact contacts.Contact
-  err := row.Scan(&contact.ID, &contact.FirstName, &contact.LastName, &contact.Phone, &contact.Email)
-  if err != nil {
-    return nil, err
-  }
+	var contact contacts.Contact
+	err := row.Scan(
+		&contact.ID,
+		&contact.FirstName,
+		&contact.LastName,
+		&contact.Phone,
+		&contact.Email,
+	)
+	if err != nil {
+		return nil, err
+	}
 
-  return &contact, nil
+	return &contact, nil
 }
 
+func (r *SqliteContactRepository) Update(contact *contacts.Contact) error {
+	query := "UPDATE contacts SET first_name = ?, last_name = ?, phone = ?, email = ? WHERE id = ?"
+	_, err := r.DB.Exec(
+		query,
+		contact.FirstName,
+		contact.LastName,
+		contact.Phone,
+		contact.Email,
+		contact.ID,
+	)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
