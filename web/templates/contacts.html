@@ -1,0 +1,5 @@
+<ul>
+  {{ range .Contacts }}
+  <li>{{ .FirstName }} {{ .LastName }}: {{ .Phone }} @ {{ .Email }}</li>
+  {{ end }}
+</ul>
